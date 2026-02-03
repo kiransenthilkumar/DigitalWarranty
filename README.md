@@ -54,3 +54,8 @@ A Flask-based web application for managing digital warranties and product receip
 - Flask-WTF
 - Tailwind CSS
 - SQLite (default database)
+
+## Users
+ - Sachin@gmail.com 00000000
+ - Mouli@gmail.com 00000000
+ - nishanth@gmail.com 00000000
