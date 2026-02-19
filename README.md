@@ -57,6 +57,6 @@ A Flask-based web application for managing digital warranties and product receip
 
 
 ## Users
- - Sachin@gmail.com 00000000
- - Mouli@gmail.com 00000000
- - nishanth@gmail.com 00000000
+ - sachin@gmail.com password
+ - muli@gmail.com password
+ - kiran@gmail.com password
