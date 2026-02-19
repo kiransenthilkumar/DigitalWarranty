@@ -12,3 +12,7 @@ services:
         value: "0"
       - key: PYTHON_VERSION
         value: "3.10"
+    disk:
+      name: warranty-data
+      mountPath: /opt/render/project/src/instance
+      sizeGB: 1
