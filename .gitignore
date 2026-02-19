@@ -7,3 +7,5 @@ instance/
 uploads/
 static/uploads/*
 !static/uploads/.gitkeep
+!static/uploads/*.png
+!static/uploads/*.pdf
