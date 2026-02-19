@@ -90,3 +90,102 @@ So seed_db() only runs when the database is empty.
 1. Add `static/uploads/.gitkeep` to version control
 2. Ignore `static/uploads/*` in `.gitignore`
 3. Mount uploads to a persistent volume on deployment platforms
+
+## Render.com Deployment 🚀
+
+### Quick Start
+
+1. **Connect GitHub Repository**
+   - Go to [render.com](https://render.com)
+   - Sign in with GitHub
+   - Connect your DigitalWarranty repository
+
+2. **Create a New Web Service**
+   - Click "New +" → "Web Service"
+   - Select the DigitalWarranty repository
+   - Render will auto-detect Python
+
+3. **Configure Service**
+   - **Name**: `digital-warranty` (or your preferred name)
+   - **Environment**: `Python 3.10`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn wsgi:app`
+   - **Plan**: Free (or Paid for production)
+
+4. **Set Environment Variables**
+   - Go to Environment tab in Render Dashboard
+   - Add the following:
+   ```
+   FLASK_ENV=production
+   FLASK_DEBUG=0
+   SECRET_KEY=your-very-secure-secret-key-here
+   ```
+
+5. **Deploy**
+   - Click "Create Web Service"
+   - Render will automatically deploy on every GitHub push
+
+### Important Notes for Render
+
+- **Database**: SQLite database is stored in `instance/warranty.db`
+  - Persists during app restarts
+  - Persists across deployments (Render keeps the same /opt/render/project/src directory)
+
+- **Uploads Folder**: Files stored in `static/uploads/`
+  - Persists across restarts and deployments on Render
+  - WARNING: Files may be lost on full service deletion
+
+- **Environment Variables**:
+  - `SECRET_KEY` - Must be set to a random secure string in production
+  - Optional: Use PostgreSQL for better reliability
+    ```
+    DATABASE_URL=postgresql://[user]:[password]@[host]:5432/[database]
+    ```
+
+### Recommended Production Configuration
+
+```
+Environment Variables:
+- FLASK_ENV: production
+- FLASK_DEBUG: 0
+- SECRET_KEY: (generate random 32+ char string)
+
+Build Command: pip install -r requirements.txt
+Start Command: gunicorn --workers 4 --bind 0.0.0.0:10000 wsgi:app
+
+Plan: Paid (for consistent uptime)
+Region: Closest to your users
+```
+
+### Monitoring & Logs
+
+- **View Logs**: Dashboard → Events tab
+- **Monitor Performance**: Dashboard → Metrics tab
+- **Restart Service**: Dashboard → Manual restart button
+
+### Troubleshooting Render Deployment
+
+**App shows 502 Bad Gateway**
+- Check logs for errors
+- Verify `requirements.txt` is correct
+- Ensure `wsgi.py` exists and is correct
+
+**Database not persisting**
+- Render persists `/opt/render/project/src/instance/`
+- Verify paths in `config.py` use absolute paths
+- Don't store database in `/tmp` directory
+
+**Uploads disappearing**
+- Files in `static/uploads/` should persist
+- If using PostgreSQL, store file paths in DB
+
+### Using PostgreSQL on Render (Recommended for Production)
+
+1. Create PostgreSQL Database on Render
+2. Copy the DATABASE_URL from Render PostgreSQL service
+3. Add to Web Service environment variables as `DATABASE_URL`
+4. Render will automatically use PostgreSQL instead of SQLite
+
+The app will automatically use PostgreSQL if `DATABASE_URL` is set!
+
+
