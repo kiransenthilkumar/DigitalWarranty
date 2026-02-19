@@ -126,9 +126,9 @@ def create_receipt_pdf(filename, receipt_data):
 def seed_db():
     # Create sample users
     users_data = [
-        {'email': 'test@example.com', 'password': 'password'},
-        {'email': 'user2@example.com', 'password': 'password'},
-        {'email': 'admin@example.com', 'password': 'admin123'}
+        {'email': 'sachin@gmail.com', 'password': 'password'},
+        {'email': 'kiran@gmail.com', 'password': 'password'},
+        {'email': 'mouli@gmail.com', 'password': 'password'}
     ]
 
     users = []
@@ -309,14 +309,16 @@ def seed_db():
         )
         product.calculate_expiry()
 
-        # Create placeholder image
-        image_filename = f"{user.id}_image_{i}.png"
+        # Create placeholder image with product name
+        # Sanitize product name for filename (replace spaces with underscores, remove special chars)
+        product_name_sanitized = prod_data['name'].lower().replace(' ', '_').replace("'", '')
+        image_filename = f"{user.id}_{product_name_sanitized}.png"
         image_path = os.path.join('static', 'uploads', image_filename)
         create_placeholder_image(prod_data['name'], image_path, prod_data['category'])
         product.product_image = image_filename
 
         # Create receipt PDF
-        receipt_filename = f"{user.id}_receipt_{i}.pdf"
+        receipt_filename = f"{user.id}_{product_name_sanitized}.pdf"
         receipt_path = os.path.join('static', 'uploads', receipt_filename)
 
         receipt_data = {

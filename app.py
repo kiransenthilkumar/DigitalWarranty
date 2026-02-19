@@ -16,6 +16,30 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+# Database initialization function
+def init_db():
+    """Initialize database - runs on first app context creation"""
+    with app.app_context():
+        # Create all tables if they don't exist
+        db.create_all()
+        
+        # Only seed if no users exist
+        if User.query.first() is None:
+            seed_db()
+            print("Database initialized and seeded with sample data.")
+        else:
+            print("Database already initialized.")
+
+# Initialize database on app startup (works with both dev and production)
+with app.app_context():
+    try:
+        db.create_all()
+        # Check if database needs seeding
+        if User.query.first() is None:
+            seed_db()
+    except Exception as e:
+        print(f"Database initialization error: {e}")
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -299,8 +323,5 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        if not User.query.first():
-            seed_db()
+    # Run Flask development server
     app.run(debug=True)
