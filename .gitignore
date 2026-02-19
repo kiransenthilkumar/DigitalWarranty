@@ -5,4 +5,5 @@ __pycache__/
 .vscode/
 instance/
 uploads/
-static/uploads/
+static/uploads/*
+!static/uploads/.gitkeep
