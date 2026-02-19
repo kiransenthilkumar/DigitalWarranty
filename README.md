@@ -23,7 +23,7 @@ A Flask-based web application for managing digital warranties and product receip
 2. Create a virtual environment:
    ```
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   venv\Scripts\activate
    ```
 
 3. Install dependencies:
@@ -54,3 +54,9 @@ A Flask-based web application for managing digital warranties and product receip
 - Flask-WTF
 - Tailwind CSS
 - SQLite (default database)
+
+
+## Users
+ - Sachin@gmail.com 00000000
+ - Mouli@gmail.com 00000000
+ - nishanth@gmail.com 00000000
