@@ -13,11 +13,19 @@ class Config:
     # Local: falls back to SQLite
     if os.environ.get('DATABASE_URL'):
         # PostgreSQL on Render (or other hosted DB)
+        # Ensure SSL mode is required and enable pool pre-ping to handle
+        # Render's occasional closed connections.
         SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+        # Add engine options for SSL and liveliness checks
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            'connect_args': {'sslmode': 'require'},
+            'pool_pre_ping': True,
+        }
     else:
         # SQLite for local development
         _db_path = os.path.join(INSTANCE_PATH, 'warranty.db')
         SQLALCHEMY_DATABASE_URI = f'sqlite:///{_db_path}'.replace('\\', '/')
+        SQLALCHEMY_ENGINE_OPTIONS = {}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Upload folder configuration
