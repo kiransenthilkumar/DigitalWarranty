@@ -4,23 +4,24 @@ class Config:
     # Get secret key from environment, use fallback for development only
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
     
-    # Determine instance path - use Render persistent disk if available
-    if os.environ.get('RENDER'):
-        # On Render, use the persistent disk mount point
-        INSTANCE_PATH = '/opt/render/project/src/instance'
-    else:
-        # Local development
-        INSTANCE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance')
-    
+    # Ensure instance folder exists for local development
+    INSTANCE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance')
     os.makedirs(INSTANCE_PATH, exist_ok=True)
     
-    # Database configuration - use correct SQLite path
-    _db_path = os.path.join(INSTANCE_PATH, 'warranty.db')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or f'sqlite:///{_db_path}'.replace('\\', '/')
+    # Database configuration
+    # On Render: uses PostgreSQL via DATABASE_URL environment variable
+    # Local: falls back to SQLite
+    if os.environ.get('DATABASE_URL'):
+        # PostgreSQL on Render (or other hosted DB)
+        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    else:
+        # SQLite for local development
+        _db_path = os.path.join(INSTANCE_PATH, 'warranty.db')
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{_db_path}'.replace('\\', '/')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Upload folder configuration
-    UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or 'static/uploads'
+    UPLOAD_FOLDER = 'static/uploads'
     ALLOWED_EXTENSIONS = {'pdf', 'jpg', 'jpeg', 'png', 'webp', 'avif'}
     
     @staticmethod
